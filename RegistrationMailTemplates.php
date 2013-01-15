@@ -45,6 +45,8 @@ class RegistrationMailTemplates extends System
 			return;
 		}
 
+		$this->import('Database');
+
 		$arrData['domain'] = $this->Environment->host;
 		$arrData['link'] = $this->Environment->base . $this->Environment->request . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos($this->Environment->request, '?') !== false) ? '&' : '?') . 'token=' . $arrData['activation'];
 
@@ -68,6 +70,11 @@ class RegistrationMailTemplates extends System
 		// Initialize and send e-mail
 		try
 		{
+            foreach($arrData as $fieldName => $fieldValue)
+            {
+                $arrData[$fieldName] = $this->formatValue('tl_member', $fieldName, $fieldValue);
+            }
+
 			$objEmail = new EmailTemplate($objModule->mail_template);
 			$objEmail->send($arrData['email'], $arrData);
 
@@ -81,6 +88,76 @@ class RegistrationMailTemplates extends System
 		}
 
 		$objModule->reg_activate = true;
+	}
+
+	/**
+	 * Format value (based on DC_Table::show(), Contao 2.9.0)
+	 * @param string
+	 * @param string
+	 * @param mixed
+	 * @return string
+	 */
+	public function formatValue($strTable, $strField, $varValue)
+	{
+		$varValue = deserialize($varValue);
+
+		if (!is_array($GLOBALS['TL_DCA'][$strTable]))
+		{
+			$this->loadDataContainer($strTable);
+			$this->loadLanguageFile($strTable);
+		}
+
+		// Get field value
+		if (strlen($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['foreignKey']))
+		{
+			$chunks = explode('.', $GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['foreignKey']);
+			$varValue = empty($varValue) ? array(0) : $varValue;
+			$objKey = $this->Database->execute("SELECT " . $chunks[1] . " AS value FROM " . $chunks[0] . " WHERE id IN (" . implode(',', array_map('intval', (array)$varValue)) . ")");
+
+			return implode(', ', $objKey->fetchEach('value'));
+		}
+
+		elseif (is_array($varValue))
+		{
+			foreach ($varValue as $kk => $vv)
+			{
+				$varValue[$kk] = $this->formatValue($strTable, $strField, $vv);
+			}
+
+			return implode(', ', $varValue);
+		}
+
+		elseif ($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['eval']['rgxp'] == 'date')
+		{
+			return $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $varValue);
+		}
+
+		elseif ($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['eval']['rgxp'] == 'time')
+		{
+			return $this->parseDate($GLOBALS['TL_CONFIG']['timeFormat'], $varValue);
+		}
+
+		elseif ($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['eval']['rgxp'] == 'datim' || in_array($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['flag'], array(5, 6, 7, 8, 9, 10)) || $strField == 'tstamp')
+		{
+			return $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $varValue);
+		}
+
+		elseif ($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['inputType'] == 'checkbox' && !$GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['eval']['multiple'])
+		{
+			return strlen($varValue) ? $GLOBALS['TL_LANG']['MSC']['yes'] : $GLOBALS['TL_LANG']['MSC']['no'];
+		}
+
+		elseif ($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['inputType'] == 'textarea' && ($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['eval']['allowHtml'] || $GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['eval']['preserveTags']))
+		{
+			return specialchars($varValue);
+		}
+
+		elseif (is_array($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['reference']))
+		{
+			return isset($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['reference'][$varValue]) ? ((is_array($GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['reference'][$varValue])) ? $GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['reference'][$varValue][0] : $GLOBALS['TL_DCA'][$strTable]['fields'][$strField]['reference'][$varValue]) : $varValue;
+		}
+
+		return $varValue;
 	}
 }
 
