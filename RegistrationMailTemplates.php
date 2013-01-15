@@ -40,7 +40,7 @@ class RegistrationMailTemplates extends System
 	 */
 	public function sendRegistrationEmail($intId, $arrData, &$objModule)
 	{
-		if (!$objModule->mail_template)
+		if (!$objModule->mail_template && !$objModule->admin_mail_template)
 		{
 			return;
 		}
@@ -67,23 +67,33 @@ class RegistrationMailTemplates extends System
 			}
 		}
 
+		// translate/format values
+		foreach($arrData as $strFieldName => $strFieldValue)
+        {
+            $arrData[$strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
+        }
+
 		// Initialize and send e-mail
 		try
 		{
-            foreach($arrData as $fieldName => $fieldValue)
-            {
-                $arrData[$fieldName] = $this->formatValue('tl_member', $fieldName, $fieldValue);
-            }
-
 			$objEmail = new EmailTemplate($objModule->mail_template);
 			$objEmail->send($arrData['email'], $arrData);
+		}
+		catch (Exception $e)
+		{
+			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
+			return;
+		}
 
+		// Initialize and send admin e-mail
+		try
+		{
 			$objAdminEmail = new EmailTemplate($objModule->admin_mail_template);
 			$objAdminEmail->send($GLOBALS['TL_ADMIN_EMAIL'], $arrData);
 		}
 		catch (Exception $e)
 		{
-			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
+			$this->log('Could not send admin e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
 			return;
 		}
 
