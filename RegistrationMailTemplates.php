@@ -32,6 +32,12 @@
 class RegistrationMailTemplates extends System
 {
 
+    public function __construct()
+	{
+	   parent::__construct();
+	   $this->import('Database');
+	}
+
 	/**
 	 * Send a registration e-mail
 	 * @param integer
@@ -44,8 +50,6 @@ class RegistrationMailTemplates extends System
 		{
 			return;
 		}
-
-		$this->import('Database');
 
 		$arrData['domain'] = $this->Environment->host;
 		$arrData['link'] = $this->Environment->base . $this->Environment->request . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos($this->Environment->request, '?') !== false) ? '&' : '?') . 'token=' . $arrData['activation'];
