@@ -72,33 +72,38 @@ class RegistrationMailTemplates extends System
 		}
 
 		// translate/format values
-		foreach($arrData as $strFieldName => $strFieldValue)
+		foreach ($arrData as $strFieldName => $strFieldValue)
         {
             $arrData[$strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
         }
 
-		// Initialize and send e-mail
-		try
-		{
-			$objEmail = new EmailTemplate($objModule->mail_template);
-			$objEmail->send($arrData['email'], $arrData);
-		}
-		catch (Exception $e)
-		{
-			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
-			return;
-		}
+        if ($objModule->mail_template > 0)
+        {
+            // Initialize and send e-mail
+    		try
+    		{
+    			$objEmail = new EmailTemplate($objModule->mail_template);
+    			$objEmail->send($arrData['email'], $arrData);
+    		}
+    		catch (Exception $e)
+    		{
+    			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
+    		}
+        }
 
-		// Initialize and send admin e-mail
-		try
-		{
-			$objAdminEmail = new EmailTemplate($objModule->admin_mail_template);
-			$objAdminEmail->send($GLOBALS['TL_ADMIN_EMAIL'], $arrData);
-		}
-		catch (Exception $e)
-		{
-			$this->log('Could not send admin e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
-			return;
+        if ($objModule->admin_mail_template > 0)
+        {
+    		// Initialize and send admin e-mail
+    		try
+    		{
+    			$objAdminEmail = new EmailTemplate($objModule->admin_mail_template);
+    			$objAdminEmail->send($GLOBALS['TL_ADMIN_EMAIL'], $arrData);
+    		}
+    		catch (Exception $e)
+    		{
+    			$this->log('Could not send admin e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
+    			return;
+    		}
 		}
 
 		$objModule->reg_activate = true;
