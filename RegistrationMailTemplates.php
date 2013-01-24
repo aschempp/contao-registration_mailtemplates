@@ -71,12 +71,14 @@ class RegistrationMailTemplates extends System
 			}
 		}
 
+
 		// translate/format values
 		foreach ($arrData as $strFieldName => $strFieldValue)
         {
             $arrData[$strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
         }
 
+        $reg_activate = false;
         if ($objModule->mail_template > 0)
         {
             // Initialize and send e-mail
@@ -84,6 +86,7 @@ class RegistrationMailTemplates extends System
     		{
     			$objEmail = new EmailTemplate($objModule->mail_template);
     			$objEmail->send($arrData['email'], $arrData);
+    			$reg_activate = true;
     		}
     		catch (Exception $e)
     		{
@@ -98,6 +101,7 @@ class RegistrationMailTemplates extends System
     		{
     			$objAdminEmail = new EmailTemplate($objModule->admin_mail_template);
     			$objAdminEmail->send($GLOBALS['TL_ADMIN_EMAIL'], $arrData);
+    			$reg_activate = true;
     		}
     		catch (Exception $e)
     		{
@@ -106,7 +110,7 @@ class RegistrationMailTemplates extends System
     		}
 		}
 
-		$objModule->reg_activate = true;
+		$objModule->reg_activate = $reg_activate;
 	}
 
 	/**
