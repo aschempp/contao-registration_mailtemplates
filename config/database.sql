@@ -7,9 +7,9 @@
 -- *                                                      *
 -- ********************************************************
 
--- 
+--
 -- Table `tl_module`
--- 
+--
 
 CREATE TABLE `tl_module` (
   `mailtemplate_id` int(10) unsigned NOT NULL default '0'
