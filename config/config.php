@@ -31,7 +31,7 @@
 /**
  * Enable extension if the mail_templates extension is active
  */
-if (in_array('mail_templates', Config::getInstance()->getActiveModules()))
+if (in_array('mailtemplates', Config::getInstance()->getActiveModules()))
 {
 	$GLOBALS['FE_MOD']['user']['lostPassword'] = 'ModulePasswordEmailTemplates';
 	$GLOBALS['TL_HOOKS']['createNewUser'][] = array('RegistrationMailTemplates', 'sendRegistrationEmail');
