@@ -22,18 +22,13 @@
  *
  * PHP version 5
  * @copyright  terminal42 gmbh 2013
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
  * @author     Andreas Schempp <andreas.schempp@terminal42.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
 
 
 /**
- * Enable extension if the mail_templates extension is active
+ * Fields
  */
-if (in_array('mailtemplates', Config::getInstance()->getActiveModules()))
-{
-	$GLOBALS['FE_MOD']['user']['lostPassword'] = 'ModulePasswordEmailTemplates';
-	$GLOBALS['TL_HOOKS']['createNewUser'][] = array('RegistrationMailTemplates', 'sendRegistrationEmail');
-	$GLOBALS['TL_HOOKS']['updatePersonalData'][] = array('RegistrationMailTemplates', 'notifyAboutPersonalData');
-}
+$GLOBALS['TL_LANG']['tl_module']['notifyPersonalData'] = array('Send update notification', 'Send an email when personal data has been changed.');
+$GLOBALS['TL_LANG']['tl_module']['mail_recipient'] = array('Recipient address', 'Enter the address of the email recipient.');

@@ -12,5 +12,6 @@
 --
 
 CREATE TABLE `tl_module` (
-  `mailtemplate_id` int(10) unsigned NOT NULL default '0'
+  `notifyPersonalData` char(1) NOT NULL default ''
+  `mail_recipient` varchar(255) NOT NULL default ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

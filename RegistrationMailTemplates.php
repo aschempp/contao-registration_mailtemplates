@@ -28,7 +28,7 @@
  */
 
 
-class RegistrationMailTemplates extends System
+class RegistrationMailTemplates extends Controller
 {
 
 	/**
@@ -79,3 +79,56 @@ class RegistrationMailTemplates extends System
 		$objModule->reg_activate = true;
 	}
 
+
+	public function storePersonalData()
+	{
+		if (TL_MODE == 'FE' && FE_USER_LOGGED_IN)
+		{
+			$this->import('FrontendUser', 'User');
+
+			$_SESSION['PERSONAL_DATA'] = $this->User->getData();
+		}
+	}
+
+
+	public function notifyAboutPersonalData($objUser, $arrData, $objModule)
+	{
+		if (is_array($_SESSION['PERSONAL_DATA']) && $objModule->notifyPersonalData && $objModule->mail_template)
+		{
+			$arrChanges = array_diff_assoc($arrData, $_SESSION['PERSONAL_DATA']);
+
+			if (!empty($arrChanges))
+			{
+				$arrCountries = $this->getCountries();
+
+				$arrTokens['old_address'] =
+"{$_SESSION['PERSONAL_DATA']['company']}
+{$_SESSION['PERSONAL_DATA']['firstname']} {$_SESSION['PERSONAL_DATA']['lastname']}
+{$_SESSION['PERSONAL_DATA']['street']}
+{$_SESSION['PERSONAL_DATA']['postal']} {$_SESSION['PERSONAL_DATA']['city']}
+{$arrCountries[$_SESSION['PERSONAL_DATA']['country']]}";
+
+				$arrTokens['new_address'] =
+"{$arrData['company']}
+{$arrData['firstname']} {$arrData['lastname']}
+{$arrData['street']}
+{$arrData['postal']} {$arrData['city']}
+{$arrCountries[$arrData['country']]}";
+
+
+                $arrTokens['changed'] = '';
+
+				foreach ($arrChanges as $field => $value)
+				{
+					if ($field == 'password' || $field == 'username')
+						continue;
+
+					$arrTokens['changed'] .= $GLOBALS['TL_LANG']['tl_member'][$field][0] . ': "' . $_SESSION['PERSONAL_DATA'][$field] . '" => "' . $value . '"' . "\n";
+				}
+
+				$objEmail = new EmailTemplate($objModule->mail_template);
+				$objEmail->send($objModule->mail_recipient, $arrTokens);
+			}
+		}
+	}
+}

@@ -22,18 +22,15 @@
  *
  * PHP version 5
  * @copyright  terminal42 gmbh 2013
- * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
  * @author     Andreas Schempp <andreas.schempp@terminal42.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
 
 
 /**
- * Enable extension if the mail_templates extension is active
+ * Config
  */
-if (in_array('mailtemplates', Config::getInstance()->getActiveModules()))
+if (TL_MODE == 'FE')
 {
-	$GLOBALS['FE_MOD']['user']['lostPassword'] = 'ModulePasswordEmailTemplates';
-	$GLOBALS['TL_HOOKS']['createNewUser'][] = array('RegistrationMailTemplates', 'sendRegistrationEmail');
-	$GLOBALS['TL_HOOKS']['updatePersonalData'][] = array('RegistrationMailTemplates', 'notifyAboutPersonalData');
+	$GLOBALS['TL_DCA']['tl_member']['config']['onload_callback'][] = array('RegistrationMailTemplates', 'storePersonalData');
 }
