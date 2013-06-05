@@ -31,7 +31,7 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['registration'] = str_replace('reg_activate;', 'reg_activate,mail_template;', $GLOBALS['TL_DCA']['tl_module']['palettes']['registration']);
+$GLOBALS['TL_DCA']['tl_module']['palettes']['registration'] = str_replace('reg_activate;', 'reg_activate,mail_template,admin_mail_template;', $GLOBALS['TL_DCA']['tl_module']['palettes']['registration']);
 $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword'] = str_replace('reg_jumpTo,', 'reg_jumpTo,mail_template,', $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword']);
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'notifyPersonalData';
