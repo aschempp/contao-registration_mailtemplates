@@ -24,6 +24,7 @@
  * @copyright  terminal42 gmbh 2013
  * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
  * @author     Andreas Schempp <andreas.schempp@terminal42.ch>
+ * @author     Jan Reuteler <jan.reuteler@terminal42.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
 
@@ -36,6 +37,7 @@ class RegistrationMailTemplates extends Controller
 	   parent::__construct();
 	   $this->import('Database');
 	}
+
 
 	/**
 	 * Send a registration e-mail
@@ -87,7 +89,7 @@ class RegistrationMailTemplates extends Controller
     		}
     		catch (Exception $e)
     		{
-    			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
+    			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), __METHOD__, TL_ERROR);
     		}
         }
 
@@ -101,12 +103,13 @@ class RegistrationMailTemplates extends Controller
     		}
     		catch (Exception $e)
     		{
-    			$this->log('Could not send admin e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
+    			$this->log('Could not send admin registration e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), __METHOD__, TL_ERROR);
     		}
 		}
 
 		$objModule->reg_activate = true;
 	}
+
 
 	/**
 	 * Format value (based on DC_Table::show(), Contao 2.9.0)
