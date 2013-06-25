@@ -77,7 +77,6 @@ class RegistrationMailTemplates extends Controller
             $arrData[$strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
         }
 
-        $reg_activate = false;
         if ($objModule->mail_template > 0)
         {
             // Initialize and send e-mail
@@ -85,7 +84,6 @@ class RegistrationMailTemplates extends Controller
     		{
     			$objEmail = new EmailTemplate($objModule->mail_template);
     			$objEmail->send($arrData['email'], $arrData);
-    			$reg_activate = true;
     		}
     		catch (Exception $e)
     		{
@@ -100,16 +98,14 @@ class RegistrationMailTemplates extends Controller
     		{
     			$objAdminEmail = new EmailTemplate($objModule->admin_mail_template);
     			$objAdminEmail->send($GLOBALS['TL_ADMIN_EMAIL'], $arrData);
-    			$reg_activate = true;
     		}
     		catch (Exception $e)
     		{
     			$this->log('Could not send admin e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), 'RegistrationMailTemplates sendRegistrationEmail()', TL_ERROR);
-    			return;
     		}
 		}
 
-		$objModule->reg_activate = $reg_activate;
+		$objModule->reg_activate = true;
 	}
 
 	/**
