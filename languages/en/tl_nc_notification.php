@@ -28,9 +28,9 @@
 
 
 /**
- * Config
+ * Notification types
  */
-if (TL_MODE == 'FE')
-{
-	$GLOBALS['TL_DCA']['tl_member']['config']['onload_callback'][] = array('RegistrationNotificationCenter', 'storePersonalData');
-}
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['contao']              = 'Contao';
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['member_password']     = array('Member lost password');
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['member_personalData'] = array('Member personal data');
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['member_registration'] = array('Member registration');

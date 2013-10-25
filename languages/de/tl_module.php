@@ -32,3 +32,4 @@
  */
 $GLOBALS['TL_LANG']['tl_module']['notifyPersonalData'] = array('E-Mail bei Änderung senden', 'Eine Benachrichtigung bei Änderung der persönlichen Daten versenden.');
 $GLOBALS['TL_LANG']['tl_module']['mail_recipient'] = array('Empfänger-Adresse', 'Geben Sie die E-Mail Adresse des Empfängers sein.');
+$GLOBALS['TL_LANG']['tl_module']['nc_notification_admin'] = array('Notification admin', 'Please select an admin notification.');
