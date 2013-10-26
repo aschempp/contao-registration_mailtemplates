@@ -217,7 +217,7 @@ class RegistrationNotificationCenter extends \Controller
 					$arrTokens['changed'] .= $GLOBALS['TL_LANG']['tl_member'][$field][0] . ': "' . $_SESSION['PERSONAL_DATA'][$field] . '" => "' . $value . '"' . "\n";
 				}
 
-				$arrTokens['recipient_email'] = $objModule->mail_recipient;
+				$arrTokens['recipient_email'] = $arrData['email'];
 				$objNotification = \NotificationCenter\Model\Notification::findByPk($objModule->nc_notification);
 
 		        if ($objNotification !== null)

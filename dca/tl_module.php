@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword'] = str_replace('reg_p
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'notifyPersonalData';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['personalData'] = str_replace('{redirect_legend', '{email_legend:hide},notifyPersonalData;{redirect_legend', $GLOBALS['TL_DCA']['tl_module']['palettes']['personalData']);
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['notifyPersonalData'] = 'nc_notification,mail_recipient';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['notifyPersonalData'] = 'nc_notification';
 
 
 /**
@@ -49,13 +49,4 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['notifyPersonalData'] = array
     'inputType'         => 'checkbox',
     'eval'              => array('submitOnChange'=>true, 'tl_class'=>'clr'),
     'sql'               => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['mail_recipient'] = array
-(
-    'label'             => &$GLOBALS['TL_LANG']['tl_module']['mail_recipient'],
-    'exclude'           => true,
-    'inputType'         => 'text',
-    'eval'              => array('maxlength'=>255, 'rgxp'=>'email', 'tl_class'=>'w50'),
-    'sql'               => "varchar(255) NOT NULL default ''"
 );

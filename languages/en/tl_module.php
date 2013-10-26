@@ -31,4 +31,3 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['notifyPersonalData'] = array('Send update notification', 'Send an email when personal data has been changed.');
-$GLOBALS['TL_LANG']['tl_module']['mail_recipient'] = array('Recipient address', 'Enter the address of the email recipient.');
