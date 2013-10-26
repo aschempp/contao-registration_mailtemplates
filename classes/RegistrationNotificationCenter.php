@@ -49,12 +49,14 @@ class RegistrationNotificationCenter extends \Controller
 	 */
 	public function sendRegistrationEmail($intId, $arrData, &$objModule)
 	{
-		if (!$objModule->nc_notification && !$objModule->nc_notification_admin)
+		if (!$objModule->nc_notification)
 		{
 			return;
 		}
 
 		$arrTokens = array();
+		$arrTokens['recipient_email'] = $arrData['email'];
+		$arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 		$arrTokens['domain'] = \Environment::get('host');
 		$arrTokens['link'] = \Environment::get('base') . \Environment::get('request') . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos(\Environment::get('request'), '?') !== false) ? '&' : '?') . 'token=' . $arrData['activation'];
 
@@ -81,21 +83,12 @@ class RegistrationNotificationCenter extends \Controller
             $arrTokens['member_ ' . $strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
         }
 
-		$arrTokens['recipient_email'] = $arrData['email'];
         $objNotification = \NotificationCenter\Model\Notification::findByPk($objModule->nc_notification);
 
         if ($objNotification !== null)
         {
         	$objNotification->send($arrData);
         }
-
-		$arrTokens['recipient_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
-		$objAdminNotification = \NotificationCenter\Model\Notification::findByPk($objModule->nc_notification_admin);
-
-        if ($objAdminNotification !== null)
-        {
-        	$objAdminNotification->send($arrData);
-		}
 
 		$objModule->reg_activate = true;
 	}

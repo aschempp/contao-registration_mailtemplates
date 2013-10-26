@@ -31,7 +31,7 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['registration'] = str_replace('reg_activate;', 'reg_activate,nc_notification,nc_notification_admin;', $GLOBALS['TL_DCA']['tl_module']['palettes']['registration']);
+$GLOBALS['TL_DCA']['tl_module']['palettes']['registration'] = str_replace('reg_activate;', 'reg_activate,nc_notification;', $GLOBALS['TL_DCA']['tl_module']['palettes']['registration']);
 $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword'] = str_replace('reg_password;', 'reg_password,nc_notification;', $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword']);
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'notifyPersonalData';
@@ -59,6 +59,3 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['mail_recipient'] = array
     'eval'              => array('maxlength'=>255, 'rgxp'=>'email', 'tl_class'=>'w50'),
     'sql'               => "varchar(255) NOT NULL default ''"
 );
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['nc_notification_admin'] = $GLOBALS['TL_DCA']['tl_module']['fields']['nc_notification'];
-$GLOBALS['TL_DCA']['tl_module']['fields']['nc_notification_admin']['label'] = &$GLOBALS['TL_LANG']['tl_module']['nc_notification_admin'];
