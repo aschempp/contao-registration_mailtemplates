@@ -55,7 +55,6 @@ class RegistrationNotificationCenter extends \Controller
 		}
 
 		$arrTokens = array();
-		$arrTokens['recipient_email'] = $arrData['email'];
 		$arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 		$arrTokens['domain'] = \Environment::get('host');
 		$arrTokens['link'] = \Environment::get('base') . \Environment::get('request') . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos(\Environment::get('request'), '?') !== false) ? '&' : '?') . 'token=' . $arrData['activation'];

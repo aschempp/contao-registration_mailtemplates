@@ -54,7 +54,7 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalD
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_subject'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_text'];
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_html'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_text'];
 
-$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['recipients'] = array('recipient_email', 'admin_email');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['recipients'] = array('member_email', 'admin_email');
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['attachment_tokens'] = array();
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_text'] = array('domain', 'link', 'member_*', 'recipient_email');
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_subject'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_text'];
