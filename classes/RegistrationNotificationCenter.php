@@ -28,8 +28,10 @@
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
 
+namespace Contao;
 
-class RegistrationMailTemplates extends Controller
+
+class RegistrationNotificationCenter extends \Controller
 {
 
     public function __construct()
@@ -47,13 +49,15 @@ class RegistrationMailTemplates extends Controller
 	 */
 	public function sendRegistrationEmail($intId, $arrData, &$objModule)
 	{
-		if (!$objModule->mail_template && !$objModule->admin_mail_template)
+		if (!$objModule->nc_notification)
 		{
 			return;
 		}
 
-		$arrData['domain'] = $this->Environment->host;
-		$arrData['link'] = $this->Environment->base . $this->Environment->request . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos($this->Environment->request, '?') !== false) ? '&' : '?') . 'token=' . $arrData['activation'];
+		$arrTokens = array();
+		$arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
+		$arrTokens['domain'] = \Environment::get('host');
+		$arrTokens['link'] = \Environment::get('base') . \Environment::get('request') . (($GLOBALS['TL_CONFIG']['disableAlias'] || strpos(\Environment::get('request'), '?') !== false) ? '&' : '?') . 'token=' . $arrData['activation'];
 
 		// Support newsletters
 		if (in_array('newsletter', $this->Config->getActiveModules()))
@@ -63,49 +67,27 @@ class RegistrationMailTemplates extends Controller
 				if ($arrData['newsletter'] != '')
 				{
 					$objChannels = $this->Database->execute("SELECT title FROM tl_newsletter_channel WHERE id IN(". implode(',', array_map('intval', (array) $arrData['newsletter'])) .")");
-					$arrData['newsletter'] = implode("\n", $objChannels->fetchEach('title'));
+					$arrTokens['member_newsletter'] = implode("\n", $objChannels->fetchEach('title'));
 				}
 				else
 				{
-					$arrData['newsletter'] = '';
+					$arrTokens['member_newsletter'] = '';
 				}
 			}
 		}
 
-
 		// translate/format values
 		foreach ($arrData as $strFieldName => $strFieldValue)
         {
-            $arrData[$strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
+            $arrTokens['member_ ' . $strFieldName] = $this->formatValue('tl_member', $strFieldName, $strFieldValue);
         }
 
-        if ($objModule->mail_template > 0)
-        {
-            // Initialize and send e-mail
-    		try
-    		{
-    			$objEmail = new EmailTemplate($objModule->mail_template);
-    			$objEmail->send($arrData['email'], $arrData);
-    		}
-    		catch (Exception $e)
-    		{
-    			$this->log('Could not send registration e-mail for member ID ' . $arrData['id'] . ': ' . $e->getMessage(), __METHOD__, TL_ERROR);
-    		}
-        }
+        $objNotification = \NotificationCenter\Model\Notification::findByPk($objModule->nc_notification);
 
-        if ($objModule->admin_mail_template > 0)
+        if ($objNotification !== null)
         {
-    		// Initialize and send admin e-mail
-    		try
-    		{
-    			$objAdminEmail = new EmailTemplate($objModule->admin_mail_template);
-    			$objAdminEmail->send($GLOBALS['TL_ADMIN_EMAIL'], $arrData);
-    		}
-    		catch (Exception $e)
-    		{
-    			$this->log('Could not send admin registration e-mail for '.$GLOBALS['TL_ADMIN_EMAIL']. ': ' . $e->getMessage(), __METHOD__, TL_ERROR);
-    		}
-		}
+        	$objNotification->send($arrData);
+        }
 
 		$objModule->reg_activate = true;
 	}
@@ -195,9 +177,16 @@ class RegistrationMailTemplates extends Controller
 
 	public function notifyAboutPersonalData($objUser, $arrData, $objModule)
 	{
-		if (is_array($_SESSION['PERSONAL_DATA']) && $objModule->notifyPersonalData && $objModule->mail_template)
+		if (is_array($_SESSION['PERSONAL_DATA']) && $objModule->notifyPersonalData && $objModule->nc_notification)
 		{
 			$arrChanges = array_diff_assoc($arrData, $_SESSION['PERSONAL_DATA']);
+			$arrTokens = array();
+
+			// Add the member details
+			foreach ($_SESSION['PERSONAL_DATA'] as $k => $v)
+			{
+				$arrTokens['member_' . $k] = $v;
+			}
 
 			if (!empty($arrChanges))
 			{
@@ -217,7 +206,6 @@ class RegistrationMailTemplates extends Controller
 {$arrData['postal']} {$arrData['city']}
 {$arrCountries[$arrData['country']]}";
 
-
                 $arrTokens['changed'] = '';
 
 				foreach ($arrChanges as $field => $value)
@@ -228,8 +216,13 @@ class RegistrationMailTemplates extends Controller
 					$arrTokens['changed'] .= $GLOBALS['TL_LANG']['tl_member'][$field][0] . ': "' . $_SESSION['PERSONAL_DATA'][$field] . '" => "' . $value . '"' . "\n";
 				}
 
-				$objEmail = new EmailTemplate($objModule->mail_template);
-				$objEmail->send($objModule->mail_recipient, $arrTokens);
+				$arrTokens['recipient_email'] = $arrData['email'];
+				$objNotification = \NotificationCenter\Model\Notification::findByPk($objModule->nc_notification);
+
+		        if ($objNotification !== null)
+		        {
+		        	$objNotification->send($arrTokens);
+				}
 			}
 		}
 	}

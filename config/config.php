@@ -29,11 +29,33 @@
 
 
 /**
- * Enable extension if the mail_templates extension is active
+ * Enable extension if the notification_center extension is active
  */
-if (in_array('mailtemplates', Config::getInstance()->getActiveModules()))
+if (in_array('notification_center', Config::getInstance()->getActiveModules()))
 {
-	$GLOBALS['FE_MOD']['user']['lostPassword'] = 'ModulePasswordEmailTemplates';
-	$GLOBALS['TL_HOOKS']['createNewUser'][] = array('RegistrationMailTemplates', 'sendRegistrationEmail');
-	$GLOBALS['TL_HOOKS']['updatePersonalData'][] = array('RegistrationMailTemplates', 'notifyAboutPersonalData');
+	$GLOBALS['FE_MOD']['user']['lostPassword'] = 'ModulePasswordNotificationCenter';
+	$GLOBALS['TL_HOOKS']['createNewUser'][] = array('RegistrationNotificationCenter', 'sendRegistrationEmail');
+	$GLOBALS['TL_HOOKS']['updatePersonalData'][] = array('RegistrationNotificationCenter', 'notifyAboutPersonalData');
 }
+
+
+/**
+ * Notification Center notification types
+ */
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['recipients'] = array('recipient_email');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['attachment_tokens'] = array();
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['email_text'] = array('domain', 'link', 'member_*', 'recipient_email');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['email_subject'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['email_text'];
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['email_html'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_password']['email_text'];
+
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['recipients'] = array('recipient_email');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['attachment_tokens'] = array();
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_text'] = array('changed', 'member_*', 'new_address', 'old_address');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_subject'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_text'];
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_html'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_personalData']['email_text'];
+
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['recipients'] = array('member_email', 'admin_email');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['attachment_tokens'] = array();
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_text'] = array('domain', 'link', 'member_*', 'recipient_email');
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_subject'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_text'];
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_html'] = &$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['contao']['member_registration']['email_text'];

@@ -22,15 +22,17 @@
  *
  * PHP version 5
  * @copyright  terminal42 gmbh 2013
+ * @author     Kamil Kuzminski <kamil.kuzminski@gmail.com>
  * @author     Andreas Schempp <andreas.schempp@terminal42.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
 
 
 /**
- * Config
+ * Register the classes
  */
-if (TL_MODE == 'FE')
-{
-	$GLOBALS['TL_DCA']['tl_member']['config']['onload_callback'][] = array('RegistrationNotificationCenter', 'storePersonalData');
-}
+ClassLoader::addClasses(array
+(
+	'Contao\RegistrationNotificationCenter' => 'system/modules/registration_mailtemplates/classes/RegistrationNotificationCenter.php',
+	'Contao\ModulePasswordNotificationCenter' => 'system/modules/registration_mailtemplates/modules/ModulePasswordNotificationCenter.php',
+));

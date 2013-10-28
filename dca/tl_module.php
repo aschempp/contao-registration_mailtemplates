@@ -31,12 +31,12 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['registration'] = str_replace('reg_activate;', 'reg_activate,mail_template,admin_mail_template;', $GLOBALS['TL_DCA']['tl_module']['palettes']['registration']);
-$GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword'] = str_replace('reg_jumpTo,', 'reg_jumpTo,mail_template,', $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword']);
+$GLOBALS['TL_DCA']['tl_module']['palettes']['registration'] = str_replace('reg_activate;', 'reg_activate,nc_notification;', $GLOBALS['TL_DCA']['tl_module']['palettes']['registration']);
+$GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword'] = str_replace('reg_password;', 'reg_password,nc_notification;', $GLOBALS['TL_DCA']['tl_module']['palettes']['lostPassword']);
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'notifyPersonalData';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['personalData'] = str_replace('{redirect_legend', '{email_legend:hide},notifyPersonalData;{redirect_legend', $GLOBALS['TL_DCA']['tl_module']['palettes']['personalData']);
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['notifyPersonalData'] = 'mail_template,mail_recipient';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['notifyPersonalData'] = 'nc_notification';
 
 
 /**
@@ -48,12 +48,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['notifyPersonalData'] = array
     'exclude'           => true,
     'inputType'         => 'checkbox',
     'eval'              => array('submitOnChange'=>true, 'tl_class'=>'clr'),
-);
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['mail_recipient'] = array
-(
-    'label'             => &$GLOBALS['TL_LANG']['tl_module']['mail_recipient'],
-    'exclude'           => true,
-    'inputType'         => 'text',
-    'eval'              => array('maxlength'=>255, 'rgxp'=>'email', 'tl_class'=>'w50'),
+    'sql'               => "char(1) NOT NULL default ''"
 );
